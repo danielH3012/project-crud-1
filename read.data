@@ -1,0 +1,133 @@
+import java.io.IOException;
+import java.util.Scanner;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+public class App {
+    public static void main(String[] args) throws IOException  {
+        Scanner scan = new Scanner(System.in);
+        boolean lanjutkan = true;
+
+        while(lanjutkan){
+        //main menu
+        clearscreen();
+        System.out.println("database parpustakaan");
+        System.out.println("1. \tlihat seluruh buku");
+        System.out.println("2. \tcari data buku");
+        System.out.println("3. \ttambah data buku");
+        System.out.println("4. \tubah data buku");
+        System.out.println("5. \thapus data buku");
+
+        System.out.print("\n\npilihan anda: ");
+        String pilihan = scan.next();
+
+        switch(pilihan){
+            case "1":
+            System.out.println("list seluruh buku\n");
+            //tampilkan data
+            tampilkan_data();
+            break;
+            case "2":
+            System.out.println("cari buku\n");
+            //cari data
+            break;
+            case "3":
+            System.out.println("tambah buku\n");
+            //tambah data
+            break;
+            case "4":
+            System.out.println("ubah buku\n");
+            //ubah data
+            break;
+            case "5":
+            System.out.println("hapus buku\n");
+            //hapus data
+            break;
+            default:
+            System.err.println("\n input tidak ditemukan\nsilahkan masukan angka 1 - 5");
+            
+        }
+            
+            lanjutkan = yesorno("apakah anda ingin melanjutkan");
+        }
+        
+    
+
+
+
+    }
+
+
+    private static void tampilkan_data() throws IOException  {
+    FileReader fileInput;
+    BufferedReader buff_read;
+
+    try{
+        fileInput = new FileReader("proyek_java_dh/src/INPUT.TXT");
+        buff_read = new BufferedReader(fileInput);
+
+    }catch(IOException e){
+        System.err.println("database tidak ditemukan");
+        System.err.println("silahkan tambah data terlebih dahulu");
+        return;
+    }
+    String data = buff_read.readLine();
+    int banyak_data = 0;
+    
+    while(data!= null){
+        StringTokenizer str = new StringTokenizer(data,",");
+        banyak_data++;
+        System.out.print(banyak_data + " ");
+        while(str.hasMoreTokens())
+        {
+            System.out.println(str.nextToken() + "\n");
+        }
+        System.out.println("===================");
+        data = buff_read.readLine();
+        
+    }
+    System.out.println("akhir dari database");
+    }
+
+
+    //lanjut atau tidak
+    private static boolean yesorno(String massage){
+            Scanner scan = new Scanner(System.in);
+            System.out.println("\n"+ massage+" yes/no?");
+            String lanjutAtauTidak = scan.next();
+            if(lanjutAtauTidak.equalsIgnoreCase("yes") == false && lanjutAtauTidak.equalsIgnoreCase("no") == false){
+                System.out.println("pilihan anda cuma yes/no");
+                yesorno("anda mau lanjut tidak");
+            }
+            return lanjutAtauTidak.equalsIgnoreCase("yes");
+            
+    }
+
+
+    //clear screen
+    private static void clearscreen(){
+        try{
+            if(System.getProperty("os.name").contains("Windows")){
+                //windows
+                new ProcessBuilder("cmd","/c","cls").inheritIO().start().waitFor();
+            }else{
+                //unix
+                System.out.println("\033\143");
+            }
+        }catch(Exception ex){
+            System.err.println("gk bs clear screen");
+        }
+    }
+}
+
