@@ -1,0 +1,278 @@
+import java.io.IOException;
+import java.time.Year;
+import java.util.Scanner;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Scanner;
+import java.util.StringTokenizer;
+
+public class App {
+    public static void main(String[] args) throws IOException  {
+        Scanner scan = new Scanner(System.in);
+        boolean lanjutkan = true;
+
+        while(lanjutkan){
+        //main menu
+        clearscreen();
+        System.out.println("database parpustakaan");
+        System.out.println("1. \tlihat seluruh buku");
+        System.out.println("2. \tcari data buku");
+        System.out.println("3. \ttambah data buku");
+        System.out.println("4. \tubah data buku");
+        System.out.println("5. \thapus data buku");
+
+        System.out.print("\n\npilihan anda: ");
+        String pilihan = scan.next();
+
+        switch(pilihan){
+            case "1":
+            System.out.println("list seluruh buku\n");
+            //tampilkan data
+            tampilkan_data();
+            break;
+            case "2":
+            System.out.println("cari buku\n");
+            cari_buku();
+            //cari data
+            break;
+            case "3":
+            System.out.println("tambah buku\n");
+            tambahData();
+            //tambah data
+            break;
+            case "4":
+            System.out.println("ubah buku\n");
+            //ubah data
+            break;
+            case "5":
+            System.out.println("hapus buku\n");
+            //hapus data
+            break;
+            default:
+            System.err.println("\n input tidak ditemukan\nsilahkan masukan angka 1 - 5");
+            
+        }  
+            lanjutkan = yesorno("apakah anda ingin melanjutkan");
+            clearscreen();
+        }
+    }
+
+
+
+    //MENAMPILKAN DATA
+    private static void tampilkan_data() throws IOException  {
+    FileReader fileInput;
+    BufferedReader buff_read;
+
+    try{
+        fileInput = new FileReader("proyek_java_dh/src/INPUT.TXT");
+        buff_read = new BufferedReader(fileInput);
+
+    }catch(IOException e){
+        System.err.println("database tidak ditemukan");
+        System.err.println("silahkan tambah data terlebih dahulu");
+        return;
+    }
+    String data = buff_read.readLine();
+    int banyak_data = 0;
+    
+    while(data!= null){
+        StringTokenizer str = new StringTokenizer(data,",");
+        banyak_data++;
+        System.out.print(banyak_data + " ");
+        while(str.hasMoreTokens())
+        {
+            System.out.println(str.nextToken() + "\n");
+        }
+        System.out.println("===================");
+        data = buff_read.readLine();
+        
+    }
+    System.out.println("akhir dari database");
+    }
+
+
+
+    //cari buku
+    private static void cari_buku() throws IOException{
+        //cek databasenya ada atau tidak
+        try{
+        File file = new File("proyek_java_dh/src/INPUT.TXT");
+        }catch(Exception e){
+        System.err.println("database tidak ditemukan");
+        System.err.println("silahkan tambah data terlebih dahulu");
+        return;
+        }
+
+        //ambil keyword dari user
+        Scanner scan = new Scanner(System.in);
+        System.out.println("masukan data yg mau dicari: ");
+        String keyword = scan.nextLine();
+        System.out.println("");
+        String kata_kunci [] = keyword.split("\\s");
+        
+        //cek ad keyword gk di database
+        cekBuku(kata_kunci);
+    }
+
+
+
+    //cek buku didatabase dan nampilin
+    private static void cekBuku(String[] kata_kunci)throws IOException{
+        FileReader file = new FileReader("C:\\Users\\user\\OneDrive\\Documents\\proyek DH\\java\\proyek_java_dh\\src\\INPUT.TXT");
+        BufferedReader buff = new BufferedReader(file);
+        String data = buff.readLine();
+        boolean isExist = false;
+        while(data!=null){
+            isExist = true;
+            //cek keyword ada apa tidak di baris
+            for(String kataKunci:kata_kunci){
+                isExist = isExist && data.toLowerCase().contains(kataKunci); 
+            }
+            //jika keyword cocok maka tampilkan
+            if(isExist ){
+                StringTokenizer str = new StringTokenizer(data,",");
+                while(str.hasMoreTokens()) {
+            System.out.println(str.nextToken() );
+            }}System.out.println("");
+            data = buff.readLine();
+        }
+    }
+
+
+
+    //ngecek ad datanya apa kgk dan kl kgk ada nambah data
+    private static void tambahData() throws IOException{
+        FileWriter output = new FileWriter("C:\\Users\\user\\OneDrive\\Documents\\proyek DH\\java\\proyek_java_dh\\src\\INPUT.TXT",true);
+        BufferedWriter buffw = new BufferedWriter(output);
+        boolean isExist = false;
+        FileReader file = new FileReader("C:\\Users\\user\\OneDrive\\Documents\\proyek DH\\java\\proyek_java_dh\\src\\INPUT.TXT");
+        BufferedReader buff = new BufferedReader(file);
+        String data = buff.readLine();
+        Scanner input = new Scanner(System.in);
+        String penulis,judul,tahun,penerbit;
+        System.out.println("masukan nama penulis: ");
+        penulis = input.nextLine();
+        System.out.println("masukan penerbit buku: ");
+        penerbit = input.nextLine();
+        System.out.println("masukan judul buku: ");
+        judul = input.nextLine();
+
+        System.out.println("masukan tahun terbit buku: ");
+        tahun = input.nextLine();
+        //ngecek bener tahun ato enggak
+        boolean tahunvalid = false;
+        while(!tahunvalid){
+        try{
+            Year.parse(tahun);
+            tahunvalid = true;
+        }catch(Exception a){
+            System.out.println("");
+            System.err.println("tahunnya salah");
+            System.out.println("masukan tahun terbit buku: ");
+            tahun = input.nextLine();
+        }
+        }
+        
+        String[] keywords = {tahun+","+penulis+","+penerbit+","+judul};
+        while(data!=null){
+            isExist = true;
+            //cek keyword ada apa tidak di baris
+            for(String kataKunci:keywords){
+                isExist = isExist && data.toLowerCase().contains(kataKunci); 
+            }
+            //jika keyword cocok maka tampilkan
+            if(isExist ){
+                break;
+            }
+            data = buff.readLine();
+        }
+        //menulis buku di database
+        if(isExist == false){
+            //tamplate : kode,tahun,penulis,penerbit,judul
+            long nomorEntry = ambilEntryPerTahun(penulis,tahun)+1;
+            String penulisTanpaSpasi = penulis.replaceAll("\\s+","");
+            String kode = penulisTanpaSpasi+"_"+tahun+"_"+nomorEntry;
+            System.out.println("buku tidak ad didatabase");
+            boolean isTambah = yesorno("apakah anda ingin menambah buku");
+            if(isTambah){
+                buffw.write(kode+","+tahun+","+","+penulis+","+penerbit+","+judul);
+                buffw.newLine();
+                buffw.flush();
+            }
+
+        }else{
+            System.out.println("buku yg anda masukan sudah ada dengan tamplate: ");
+            cekBuku(keywords);
+        }
+        buffw.close();
+    }
+
+
+
+    //ambil entry buat kode buku
+    private static long ambilEntryPerTahun(String penulis, String tahun)throws IOException{
+        FileReader file = new FileReader("C:\\Users\\user\\OneDrive\\Documents\\proyek DH\\java\\proyek_java_dh\\src\\INPUT.TXT");
+        BufferedReader buff = new BufferedReader(file);
+        long entry =0;
+        String data = buff.readLine();
+        Scanner datScanner;
+        String kode;
+
+        while(data!= null){
+            datScanner = new Scanner(data);
+            datScanner.useDelimiter(",");
+            kode = datScanner.next();
+            datScanner = new Scanner(kode);
+            datScanner.useDelimiter("_");
+            penulis= penulis.replaceAll("\\s+","");
+            if(penulis.equalsIgnoreCase(datScanner.next()) && tahun.equalsIgnoreCase(datScanner.next())){
+                entry = datScanner.nextInt();
+            }
+            data = buff.readLine();
+        }
+        return entry;
+    }
+
+
+    //lanjut atau tidak
+    private static boolean yesorno(String massage){
+            Scanner scan = new Scanner(System.in);
+            System.out.println("\n"+ massage+" yes/no? ");
+            String lanjutAtauTidak = scan.next();
+            if(lanjutAtauTidak.equalsIgnoreCase("yes") == false && lanjutAtauTidak.equalsIgnoreCase("no") == false){
+                System.out.println("pilihan anda cuma yes/no");
+                yesorno("anda mau tidak");
+            }
+            return lanjutAtauTidak.equalsIgnoreCase("yes");
+            
+            
+    }
+
+
+
+    //clear screen
+    private static void clearscreen(){
+        try{
+            if(System.getProperty("os.name").contains("Windows")){
+                //windows
+                new ProcessBuilder("cmd","/c","cls").inheritIO().start().waitFor();
+            }else{
+                //unix
+                System.out.println("\033\143");
+            }
+        }catch(Exception e){
+            System.err.println("gk bs clear screen");
+        }
+    }
+}
